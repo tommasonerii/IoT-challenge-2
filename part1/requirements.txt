@@ -1,0 +1,5 @@
+pyshark
+pandas
+matplotlib
+seaborn
+scapy

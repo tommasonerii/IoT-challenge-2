@@ -1,0 +1,615 @@
+00:08
+Thank you.
+
+00:35
+Okay guys. Shall we start? Welcome back, okay. This is Internet of Things and today we will see MQTT.
+
+01:04
+as opposed to what we have seen last time which is co-op so we are talking about application layers protocol okay do you have any question on what we have seen so far okay on the theory or the challenge slash homework no okay So the purpose of today is to look at MQTT, which is one of the fundamental protocols in the world of IoT.
+
+01:40
+MQTT has basically become the gold standard protocol for IoT applications and it's very very popular nowadays so it is present in many different let's say IoT related ecosystems and also not only IoT okay so it's so popular and as we will see is um if there's some nice properties as a communication protocol that makes it suitable for many different scenarios okay not only related to iot but also in other uh in other scenarios okay so the purpose of today is to see mqtt on paper so i will present it main features how it works whatever the details behind it and then i believe tomorrow you will have a lamp on you okay so you will have the opportunity to to try it very very practically kids working principle
+
+02:53
+So, is, uh, protocol, which is not new. Okay. Actually dates back to 1999. it was a protocol. Developed as an internal project by IBM. Okay. And stands for message, telemetry transport. It's 1st, uh, application domain was, uh.
+
+03:14
+as the name itself explains, moving the telemetry data for oil and gas pipelines.
+
+03:25
+So monitoring oil and gas pipelines. And then it moved to become the gold standard for IoT applications.
+
+03:35
+it's an official oasis standard okay it's not an iatf standard it's an oasis standard which is another let's say standardization body current version is not three current version is version five okay there's a type on these slides although many of the things that i will present today are still valid okay so
+
+04:00
+Let's see what is MQTT in short and why is so different from what we have seen. Just a very, very quick recall. Last time we have seen co-op and the way I have presented co-op is we start with HTTP, which is the gold standard application layer protocol for the Internet.
+
+04:22
+Right. You remember client server approach. And then we basically uh produce a lightweight version of http which becomes co-op okay so co-op as opposed to http is based on udp so completely disregards the tcp stack and then some have some nice features which are okay for the iot scenario okay it was very short header and etc
+
+04:58
+We will see that MQTT has other features which makes it suitable in the IoT scenario. So first of all MQTT is to some extent still a client server.
+
+05:17
+Okay, so we can identify when we look at an MQTT application, a client and a server as we will see. However, the type of communication between these two entities is no more request response as we have seen in co-op for example or http it's not more request response but it's publish subscribe okay and publish subscribe is fundamentally different in the way it is implemented we will look at it in any case now
+
+05:58
+So the main difference is this one, though, okay? It's the communication paradigm. There's no more synchronous nor asynchronous communication. request from the client to the server and response coming back but as we will see the communication paradigm departs from this one-to-one communication that we have in http and co-op and becomes essentially a one-to-many communication okay one publisher publishes something and many
+
+06:38
+the subscribers receive the information at the same time. And this in some situations is very, very handy, especially in IoT scenarios.
+
+06:52
+Other features of MQTT, which makes it a very, very good choice for IoT is that it's very simple as a protocol in general, especially client side.
+
+07:04
+As I said, it's still client server to some extent, and the client part is lightweight, very, very lightweight. This is something that we like. uh it has some support for quality of service similar to co-op okay you remember that co-op has some support to quality of service with these confirmable non-confirmable messages why is that why co-op has qs support
+
+07:46
+Why HTTP has no QoS support and CoAP has QoS support?
+
+07:56
+Because CoAP is based on
+
+08:00
+It's UDP-based, okay? So co-op is based on UDP. UDP doesn't guarantee any, let's say, reliability, and so the reliability and any quality of service, let's say, support must be implemented at the application layer. So that's why in co-op we can decide to have or not have acknowledgements in our messages. Similarly, as we will see also MQTT SQS support,
+
+08:27
+which makes it ready for being transported by UDP as well. And this is something we like. Why? Because UDP is much lighter than TCP. So most of the time running the complete TCP stack over a 16-bit microcontroller is not exactly nice or easy to do.
+
+08:56
+It's that agnostic. OK, so it means that it.
+
+09:02
+Somehow it is ready to transfer any type of data, although again, as we will see that there are some preferred formats that have been that have become, let's say, good practice and as some session awareness. OK.
+
+09:21
+also co-op had some session of awareness with this use of top token ids okay and having a session awareness is good because it allows you your clients it allows the clients to basically go to sleep and wake up still maintaining a sort of session with the other side of communication okay and this is again good if we want to provide support for duty cycling
+
+09:50
+So all these features make MQTT a very good candidate, as we will see for many different IoT applications. And that's also why it has become so used.
+
+10:06
+Okay, so let's see the first main difference compared to HTTP or Co-op.
+
+10:12
+MQTT is publish-subscribe. What does it mean? So it means that
+
+10:22
+a general MQTT ecosystem. As I said, it departs a little bit from the classical one-to-one communication that we had in HTTP.
+
+10:37
+In HTTP, there's a client that communicates with one server and the server replies back. In MQTT, we have generally many clients.
+
+10:48
+And clients can be either publishers or subscribers of information.
+
+10:56
+Sometimes the published subscriber paradigm is also known as the Twitter approach, or the Twitter paradigm. If you think about how it works, there's basically one client, one person which publishes something, and the followers of this person, the subscribers, which are notified with the content. So it's an inherently one-to-many communication paradigm.
+
+11:29
+And MQTT follows this logic. So clients are publisher of information and subscribers of information, and there's a central entity, which is the server in this case, which acts as intermediate entity between the publisher and the subscribers. In MQTT, the intermediate server is known as the broker, message broker.
+
+12:02
+The type of communication paradigm, if we look at it, is, inherently, by design, is push, because there's one entity which publishes, so it pushes information towards the broker,
+
+12:20
+And then the broker takes care of disseminating this information that has been produced by the publisher to the subscriber.
+
+12:30
+So this is another completely different or big difference, let's say, between MQTT and Co-op. In Co-op or IHTTP, you have still a predominant pull mechanism where the
+
+12:52
+gets whatever it was requesting. This is a pull paradigm. In MQTT we have a push paradigm with the publishers which push information towards the broker and then the broker takes care of delivering this information to the subscribers. We have also seen that
+
+13:19
+referring back to co-op, in co-op we have an advanced communication mode, which is the observe mode. You've done the co-op lab, right? So you probably have seen this also in practice, where a client may perform a GET request for a resource over a server,
+
+13:44
+that it wants to observe that resource. Now the observe mode is similar to a subscribe operation in MQTT where the client somehow subscribes to our resource and then it will be automatically notified whenever the resource changes.
+
+14:07
+And this is similar to what MQTT does in terms of communication.
+
+14:13
+So COAT solves this by introducing the observation model. OK, so we have in any MQTT system, we have this central entity, the MQTT broker, which basically is the server side entity.
+
+14:34
+Generally, the MQTT broker is a piece of software running, let's say, online.
+
+14:45
+It could be in the public internet or in a, let's say, local area network. But it's a server-side entity, which basically accepts
+
+15:02
+communications from clients, which are either sensor nodes pushing information from, let's say, where they are developed to the broker, as well as information users, which wants to use this data produced by the sensor for doing something. For example, the main example here, think about a sensor that can measure temperature, which pushes its temperature measurements, let's say every 5 minutes or 15 minutes or whatever time period it is programmed to perform this operation, so pushes this information to the broker, and the broker then
+
+15:55
+the temperature from the sensor to all clients which are subscribed to this information. It could be a laptop or a mobile device or a thermostat which uses this information for control, for example, AC ventilation or whatsoever.
+
+16:15
+So the central entity is the broker and then clients can act both as publishers or subscribers.
+
+16:25
+publisher or subscribers and MQTT is very very lightweight very simple client side so most of the complexity relies in the MQTT broker as we will see and the job of clients and so both publisher and subscribers is very very easy as we will see and limited in the actions that these clients may take This is very good and very handy because generally these clients are resource constrained and so they cannot operate, they cannot perform a lot of actions.
+
+17:13
+Now, how information is structured in MQTT. So we have seen, for example, in co-op each resource is defined by a URL, a Uniform Resource Locator, similar to HTTP web pages. Each web page has a specific URL, a specific location. In LQTT we do not have URL or URI, call them what you wish.
+
+17:54
+Instead of having resource identifiers or resource locators, in MQTT we have topics. And that's why MQTT is generally referred to as topic-based publish-subscribe system.
+
+18:12
+Publications and subscriptions happen over topics. What are topics? Well, topics are, from a syntactic point of view, are just strings. So series of characters and letters and numbers that can be defined by the administrator of the M50 system.
+
+18:40
+Logically, topics have the same meaning of URL and resources. So basically they identify a specific resource.
+
+18:56
+So for example here, we see what is the idea behind topic okay uh imagine that you want to have the information published by this temperature sensor on your device well the idea for your device is to subscribe to the temperature topic okay so the idea is that your device will ask to the broker to
+
+19:27
+let it know any publication over the temperature topic. More in details.
+
+19:36
+As I said, topics are just strings.
+
+19:42
+In MQTT we have hierarchical topics, which means that a topic can have several layers. Each layer is basically defined by one of these slash.
+
+19:58
+And apart from that, there are no specific rules for topics. So you can create a topic in the way you prefer. For example, here there's an example of a topic which basically, just by reading it, refers to what resource? Well, it seems, just by reading it, that this topic refer to a temperature sensor which is located in room 5 of the ANTLAB laboratory in the Dave building here in Bolivia.
+
+20:39
+So this is completely open to the administrator and you can define topic as you wish. There are no specific rules to follow.
+
+20:53
+For topic, you can decide how many levels you want to do. You can decide what you can put inside any topic, any topic level.
+
+21:05
+So depending on your application, these topics can be decided that way. It's the publisher which decides the topic over which it will publish. it's data and so basically the subscriber must know what is the topic the publisher will use in order to get the information that will be published.
+
+21:38
+Topics can use wildcards. There are two wildcards, the single level wildcard and the multi-level wildcard as we will see.
+
+21:49
+um for example say that you want you are a subscriber okay and you want temperature data from all rooms from the laboratory of dave you can perform you can instruct basically the broker that you are interested in this by putting a single level wildcard so for example
+
+22:15
+if I subscribe to a topic that looks like this, DAVE slash ANTLAB slash class slash temperature, I will be notified from the broker of any publication that happens over any topic that matches this format, no matter what is the exact word used at the third level, okay? It could be room one, room two, room three, No matter what is the exact word used here, any publication over this topic will be notified to a subscriber.
+
+22:58
+Similarly, I can subscribe to the multi-level topic, okay? So if I subscribe to something like Dave slash Antwerp slash Room 5 slash Ash, I will be notified of any possible publications that starts with Dave Antwerp Room 5, no matter what comes after that, okay? It could be also other levels.
+
+23:28
+So this already gives you an idea, because the multi-level wildcard, this one, can be used for subscribing over all possible topics that a publisher will use.
+
+23:44
+So when the subscriber doesn't know what are the topics that publisher will use, it can use the multi-level wildcard to subscribe automatically to all topics. Do you remember if Coop has something like this?
+
+24:11
+Coop has something that works more or less like this and it's the discovery option. In Coop, A client may perform a specific GET request to the well-known core resource and GET has answered the list of resources which are active on a specific server.
+
+24:40
+So similarly, using the multi-level wildcard allows you to discover what are the topics used by a specific on a specific broker let's say okay so let's say mqtt and co-op are different but at the end of the day they have many things which are similar
+
+25:17
+Now, originally MQTT was built over TCP.
+
+25:26
+So MQTT in its first use at the beginning, 2000, was built over TCP, which means basically that each client, publishers or subscribers, before using the actual protocol need to open a TCP connection towards the broker.
+
+25:50
+The broker, as I said, is a server-side software running and it accepts connection over a specific port. In MQTT the standard TCP port is 1883, which is the default port for MQTT.
+
+26:13
+And so, before performing any operation, a TCP connection must be established. We will see that this may be a little too much for resource-constrained sensors, which may not support TCP.
+
+26:35
+So after looking at all the features of MQTT, we will see that there's a specific version of MQTT which gets rid of the TCP IP stack. Well, not of the IP, but of TCP. So similarly to co-op, allows UDP transport layer usage. But in its...
+
+27:03
+i would say native format mqtt works over tcp okay so once the tcp connection has been established between a client and a broker an application layer connection must be performed and in mqtt there's a specific exchange of messages after the tcp handshake let's say
+
+27:33
+that is performed between a client, publishers or subscribers, and the broker. So what happens is that just after the TCP handshake, the MQTT client transmits a connect message to the broker, and then the broker will reply with a connection acknowledgement.
+
+27:57
+What's inside the connect message? Well, basically, The MQTT client connects to the broker in order to let the broker know what kind of client this is and how to treat the message exchange with this client.
+
+28:20
+So in the connect message, the client may specify some parameters. For example, the client ID. unique name for the client most of the time the client ID is randomly generated but it can also be a fixed string okay Then there are some parameters for example whether this is a clean session or not and this will be used for maintaining some state at the broker or for instructing the broker that this is a new fresh session.
+
+29:06
+There could be authentication credentials Okay, depending on the broker configuration needed, and that can be passed over this connect message. Okay. Either username and password or as we will see, or as you probably will see in the lab certificates to be exchanged for authentication. then there's three fields which specify the so-called last will testament okay for the client and the last will testament is basically a triplet of topic quality of service and message what is the meaning of the last will testament triplet basically
+
+30:07
+the broker saves this triplet these three parameters internally and when the tcp connection that binds the client and the broker
+
+30:25
+unexpectedly breaks for some reason, for any reason, let's say, the MQTT broker will transmit the last will message over the last will topic with the specific quality of service that we will see later, okay? So basically, the broker maintains a
+
+30:52
+a cache with this information per each client and keeps monitored the status of the tcp connection that binds the client to the broker if the tcp connection fails for some reason the broker will inform all other clients which are currently connected by sending the last message over the last topic
+
+31:21
+So it's a form of way of advertising any other client that a specific client is no more connected. And this could be handy in some situations.
+
+31:40
+Finally, there's a value, which is the keep alive value, which is a number that basically in seconds okay and this number informs the broker of the maximum time it can
+
+32:06
+take the client as alive even if the client doesn't perform any activity. So keep alive 30 seconds informs the broker that the client even if the client doesn't do anything for 30 seconds it's still alive.
+
+32:27
+Clearly if the client doesn't do any operation with the broker for more than keep alive seconds then the broker will assume that something is wrong with the client will tear down any tcp connection if still existing and then will propagate the last will testament of the client to all network to the entire network okay clearly the keep alive timer here
+
+32:59
+has to do with the activity of the client if the client has a specific duty cycle for which i don't know it stays awake one second and sleeps 29 seconds then this has sense okay so it has sense that it's the client that communicate the keep alive to the broker upon connection because it's the client that knows
+
+33:24
+for how long it will stay awake, for how long it will go to sleep, and so on and so forth. Upon reception of the ConnectNES, yes? QoS, we will see it in a while, when we look at quality of service.
+
+33:55
+so upon connection of the connect message the broker needs to reply with a connection acknowledgement okay if the acknowledgement is not received by the client the client cannot assume to be connected to the broker and so we need to retransmit the connect message in the connect so the connection acknowledgement basically the broker informs on whether
+
+34:25
+everything was okay, so if there's a session present at the broker that can handle clients' messages, and then a return code, okay? Zero, everything is okay. if session present is false, generally return code explains why the connection was not successful.
+
+34:47
+It could be because the client is working with an MQTT version which is not supported by the broker, or because the client ID was rejected, or because the server is unavailable, or for authentication or authorization permissions okay so depending on what happens on the broker side the connection acknowledgement will let the client know what what happened okay now Once the connection has been performed successfully, the client may start using the services of the broker, which are basically two, publishing or subscribing.
+
+35:40
+So there's not much that a client can do over an MQTT broker. Either it publishes or subscribes to some topic. Let's look first at publications and then we will move to subscriptions.
+
+35:57
+If a client has data to push to the broker, it can use a publish message, which is another type of message, which contains a short header with some information, with some fields, and then it contains also in the payload of the publish message, that's the actual data, which is exchanged from the client to the broker.
+
+36:27
+What's in the publish message header?
+
+36:31
+Again, some fields. There's an identifier of the message, so basically a packet ID. Then there's the topic over which this message is published. The topic name, for example, as I said, something completely up to the developer.
+
+36:53
+again the quality of service value we will see now what this is and then there are other fields which are of interest okay one is the retailing flag which is a binary flag true or false which again instruct the broker on the operation perform with the message itself so the broker as I said before is an intermediary okay so it's basically receives obligations from clients and then forwards these publications to other clients okay say like this there's no
+
+37:49
+cache, no memory on the broker.
+
+37:53
+A message enters and it is forwarded to the other clients. However, if the message which is published has the retain flag set to true, the broker will keep a copy of this message in its own memory.
+
+38:15
+Why this could be useful? Well, because Any client which subscribes to the topic after the message has been published could have the opportunity of receiving the copy of the message anyway.
+
+38:40
+So if the message is set as a retained message, the broker will keep a copy of this so that any client which subscribe to the topic after the message has been published can still receive a copy of that message. Okay, does it make sense?
+
+39:04
+And this is extremely useful for publishers that have duty cycles because a publisher can be sleeping
+
+39:15
+So if we don't have the possibility of saving a copy of the message on the broker, if the subscriber is sleeping while we publish, the subscriber will not get the message, right? However, by using the retain flag, the broker will keep a copy and will forward the copy when the subscriber wakes up again.
+
+39:43
+So by using a broker and the retained flag, we decouple completely the activity of the producers of data with the activity of the subscribers of the consumers of data. And this is very, very handy in IoT applications where you can have clients that have different duty cycles.
+
+40:11
+in principle they could have duty cycles that never match in terms of activity period okay so by decoupling this activity by using the intermediate server and the retain flag we obtain basically full decoupling in time and this is very very good here
+
+40:39
+In co-op, we don't have this.
+
+40:42
+In co-op, if the server is sleeping while the client tasks, there's no way this request can go. The only way we have is to insert a co-op proxy. Remember that we have co-op proxy. And a co-op proxy is essentially an intermediate prompt like the broker.
+
+41:07
+which intercepts the request and then somehow handles this on the co-op server side when the server is unplugged. Then after this we have the payload and then we have a flag on whether this message is an applicator or not. And we will see that
+
+41:32
+This W8 flag has to do with the quality of service. Now I believe we have, yes, quality of services.
+
+41:43
+Similarly to co-op, where we can decide if our messages are confirmable or non-confirmable,
+
+41:54
+In MQTT we have something similar.
+
+41:57
+So we have quality of service at the application level. We can decide for any message what kind of action we want in response. The basic level, which is similar to co-op non-confirmable messages is QoS value equals zero, which is basically no acknowledgement required.
+
+42:29
+Indeed, QoS zero is also known as at most once, transfer at most once.
+
+42:37
+You want to publish a message, you want to publish with QoS zero, you send it once, and that's it. you don't care about what happens to this transmission.
+
+42:51
+Okay, so it's best step for transfer and the reliability of this transmission is basically the same reliability of what's at the transport layer.
+
+43:01
+If you use TCP at the transport layer, this is good enough, okay? We know that this TCP has its own acknowledgements. So for native MQTT based on TCP using QS0 is perfectly fine because there will be acknowledgments that the TCP layer performing error control, retransmissions and everything we need to have 100% reliability. If we run MQTT over UDP with QS0 we have no certainty that this publication will
+
+43:44
+may be lost okay so after qs1 qs0 we have qs1 known as at least once so we want our message to be transferred and received at the broker side at least once why at least once well because this is based on
+
+44:13
+acknowledgement exchange in a stop and wait mechanism okay and so what can happen is that the mtd client publishes its message to the broker the broker replies with the publication acknowledgement but this publication acknowledgement for some reason doesn't arrive and so the client will retransmit its publication and so the broker receives twice the same publication that's why it's called at least once okay because by using the acknowledgement we enforce that the broker receives at least once this publication but maybe also more than once okay so in this case the broker will have to deal with duplicate messages
+
+45:10
+It's not a big deal because every message has a publication ID, every message has the duplicate flag which basically informs the broker whether this is a duplicate message or not. The only bad thing about duplicate messages is just that they are more messages than what is actually needed. So they basically produce some overload on the broker itself which is which may be harmful in some sense.
+
+45:46
+Okay, so QS1 is much similar to COOP, confirmable, okay?
+
+45:56
+We have message and acknowledgement coming back. Now, to avoid duplicates, MQTT also provides a frankly complex QS2 at exactly once delivery, which is basically a four-way handshake between client and broker to avoid duplicate transmissions.
+
+46:37
+So what happens is that the client
+
+46:41
+Since published with us to message. The broker replies with an acknowledgement, which is publication received. the client replies back with a publication release meaning that okay now if the publication is received at the client the original message can be erased from the client because we got the initial acknowledgement and so the broker may transmit a publication complete back then for each message we have the
+
+47:24
+basically happenings on the state of the client and the broker. So when the broker received the first publish, it processes the packet accordingly, sends the public message back and stores the packet ID to avoid duplicate process.
+
+47:45
+At the reception of the public rec the MQTT client card as I said the initial packet sends the pub rel when the pub rel is received at the broker the broker clear any current state and closes the four way handshake in pubcon okay so by using this four way handshake we avoid processing duplicate packets at the broker now since we have this
+
+48:19
+basically four messages going back and forth.
+
+48:23
+QS2 is generally non-used unless in very, very specific scenarios in which you really don't want to overload the broker. Because the main drawback of QS2 is its latency. By the fact that you have one, two, three, four exchange of messages.
+
+48:49
+And only after the fourth message the broker can start delivering its publications to the clients that are subscribed. This introduces a lot of latency.
+
+49:05
+So that's basically a trade-off in all these layers from QS0 to QS2 between reliability and latency delay of transmission, basically.
+
+49:20
+Okay, that's really a trade-off. QS2 is the, I wouldn't say it's the most reliable because also QS1 is reliable and also QS0 is reliable if there's TCP and transport layer. We can say that QS2 is the one that ensures that there are no duplicate messages processed by the broker at the cost of an increased latency from the publishers to the subscribers.
+
+49:57
+I believe again in the lab you will test the differences in using QS0, QS1 and QS2.
+
+50:05
+clearly if you don't have a reliable transport layer so if you don't have tcp that can uh cope with the lost packets etc for you then if you want reliability you need to use at least qs1 right so if you use qs1 you may have duplicates if your broker is already overwhelmed maybe trading off a little bit of latency for better usage of the broker is something that you may you may think of doing okay clear so three quality of service levels can be used now let's see the other side okay so far
+
+51:02
+we have seen just publications, but clearly, WebQt works also for subscribers. For subscriber, we have a specific message, which is the subscribe message. Again, after this reconnection,
+
+51:22
+sorry, after MQTT connection, the legacy MQTT, a client may transmit a subscribe message to the broker, and again the broker will need to answer with a subscription acknowledgement.
+
+51:38
+What's in the subscribe message? Well, clearly, we have a couple of parameters, topic and QoS,
+
+51:49
+which may repeated several times. So one client may, with a single subscribed message, actually subscribe to many different topics, each with its own quality of service.
+
+52:07
+So quality of service is not only a characteristic of the publish process, but also a characteristic of the subscription process. okay each publisher and subscriber informs the broker of the desired level of quality of service
+
+52:31
+So, for example, in this slide, there's a client which subscribes to the MQTT broker to two topics. One is Matteo temp 1 with QoS 0, and one is Kitch temp 2 with QoS 1. So each topic may have a specific QoS.
+
+52:58
+The broker will...
+
+53:02
+forward messages published over this topic to the client with the specific QoS, as we have seen before. So if it's QoS0, it's going to be a best step for delivery. If it's QoS1, it's going to be a publication from the broker to the client with acknowledgement requested. If it's QoS2, it's going to be the forward entry.
+
+53:34
+Upon the subscribe message, the broker replies with a subscription acknowledgement. And the subscription acknowledgement reports for any topic requested a return code.
+
+53:49
+Where the return code may be success or one of the error codes that we have seen before. So, for example, MQTT has...
+
+54:01
+the possibility of controlling which clients can subscribe to which topics.
+
+54:09
+So you may want to subscribe to a topic for which you are not authorized to, and the broker will tell you this. He will tell you that you have no rights to subscribe to a specific topic. And this is given in the return code.
+
+54:34
+a node that is subscribed to a topic can also unsubscribe so this is let's say the equivalent length of the unfollow operation okay that you perform generally on on social media okay so like you subscribe you can also unsubscribe clear so far
+
+54:59
+Kind of easy, right? There's no specific or difficult details. Now.
+
+55:18
+Let's look at the persistent sessions, which are the one controlled by the clean session flag. You remember? in here.
+
+55:40
+In the connect message, there's a clean session flag that can be specified. It can be true or false. And this basically controls persistent sessions.
+
+55:54
+So in the fault operation mode,
+
+56:00
+which is basically when the clean session is set as true all the client related status at the broker side is erased so the broker basically in default operation mode does not maintain any memory on what the client did during connection in a persistent session however both the client so if the clean session is false both the client and the broker maintain state okay what is this state let's see at the broker's side what is maintained is the existence of a connection for from a particular client identified by its own client id even if there were no subscriptions or no publications okay
+
+57:02
+All subscriptions that the client made during its connection will be maintained. And then also all messages either in QoS 1 or 2 flows not yet confirmed by the client. And then all new QoS 1 or 2 messages which the client missed while it was offline.
+
+57:33
+Also, all received QoS2 messages not yet confirmed to the client.
+
+57:41
+So messages for which this client should have sent an acknowledgement. So basically, the broker maintains for each client what subscriptions it was subscribed to, let's say, what topics it was subscribed to, plus all messages over subscribed topics, which are still pending somehow, either to be transferred or to be confirmed.
+
+58:14
+And the client side, if the session is not clean, so if it's a persistent session, all messages in QS1 or 2 flow not confirmed yet by the broker will be saved, because in principle they may not be received by the broker. And all received QS2 messages not yet confirmed to the broker, for which an acknowledgement needs to be made.
+
+58:48
+That means that even if the client goes offline, all of the above will be stored and are available right after the client reconnects. So using a persistent session,
+
+59:03
+we can enable client-side duty cycling basically. The broker will store everything that the client needs to perform duty cycling. Persistent sessions plus retained messages gives us complete decoupling in time between clients, broker and subscribers.
+
+59:31
+Okay?
+
+59:32
+And that's why MQTT is so used in IoT scenarios, because we can use these features to decouple completely the cycles of operation of publishers and subscribers. The broker is generally all active. It's every time active because it's a server-side software.
+
+01:00:06
+Okay, these are retained messages, which I have already explained. You don't need to go back over retained messages. What happens generally for retained messages, at least this is what the broker, MGT brokers that you find around implement, only one message per topic is retained.
+
+01:00:37
+So say that you have a topic, I don't know, client slash temperature.
+
+01:00:42
+When the client publishes a message and flags it as a retained message, the broker will store this message over the topic client slash temperature.
+
+01:00:55
+If the client publishes a new message, the message that was stored will be overwritten, basically. There's no... multiple buffer or multiple queue at the broker so the broker will store just one message per topic in the retain mode
+
+01:01:20
+And finally, last will messages and testament again, as I explained, the idea is to notify other clients about hard disconnections by a specific client. So the idea is to use this mechanism so that if a client unexpectedly disconnects from the broker. All other clients can know. of this disconnection.
+
+01:01:51
+Okay, with the triplets. Last-wheel topic, last-wheel QoS and last-wheel message. So this message will be transmitted over this topic and this QoS for all clients which are subscribed to this last-wheel topic.
+
+01:02:14
+When the last tweet message is sent, it could be many things. It could be an IO error or network failure is detected, or the client fails to communicate within the KIPA lifetime. Remember that the client upon connection specifies a KIPA lifetime. If it doesn't communicate within this time,
+
+01:02:38
+the last message and testament will be transmitted, or if the client closes the network connection without sending a disconnect packet first. So, similarly to the connect message, MQTT also defines a disconnect message in order to let our client abandon a broker.
+
+01:03:02
+Or it has a protocol error. so for basically network side error this procedure allows to understand that there was something wrong so we said about we talked about the keep alive the client specifies its own keep alive timer and then has the duty of maintaining the connection acting which means that if the client has nothing to publish
+
+01:03:33
+in the keep alive timer in order to stay alive can use a ping message a short message with no payload used only to maintain the connection alive with the broker okay so what happens is that the rpt client if
+
+01:04:02
+has nothing to publish, it's a ping request, the broker replies with a ping response. This has the effect of resetting the timer at the MQTT broker and the client stays alive.
+
+01:04:20
+So this message is used to really maintain the client alive.
+
+01:04:27
+Very short messages with null payload. It's just a very, very short exchange to confirm that the client is alive.
+
+01:04:42
+Now, you will see the NMQTT in the lab, but the main features are these ones. So it's a very, very simple protocol.
+
+01:04:53
+The only thing that you may spot as strange could be that MQTT is based on TCP.
+
+01:05:03
+So we have said, well, CoAP exists exactly with the purpose of getting rid of the TCP layer. Why MQTT has support for TCP? Especially since MQTT is basically the standard of IoT communications.
+
+01:05:21
+Well, it turns out that there's an MQTT version, let's call it a version of MQTT. It's called MQTT-S or MQTT-SN, where SM stands for sensor network, which was basically created with the purpose of getting rid of the TCP layer. So, MGTTS maintains all the ideas that we have seen today without the burden of the TCP layer.
+
+01:06:02
+So, how does it work?
+
+01:06:05
+Well, basically, the idea is that uh we have an mqtt broker okay standard mqtt broker acting
+
+01:06:21
+and supporting TCP connections.
+
+01:06:24
+We have MQTT-S gateways, which basically act as proxy or translators between MQTT and MQTT-S.
+
+01:06:38
+And clients can talk directly MQTT-S. So basically the communication from clients to the gateway is UDP based. There's no TCP connection. The gateways have a TCP connection to the broker and acts as proxies, basically. to the clients.
+
+01:07:01
+There are some differences clearly between MQTT-S and MQTT. I will quickly show you what are these differences just to let you know and convince you that MQTT-S is a little bit more suited for constrained devices. We have another presentation here.
+
+01:07:26
+The main thing to remember are the four here. OK, so basically. This is the coupling of protocols UDP on MQTT-S and TCP on MQTT with the gateways acting as translators.
+
+01:07:43
+Some new procedures like connection, procedures, subscription, etc., which are a little bit more efficient. and some procedures to support sleeping clients even more okay let me let me take another presentation very quickly okay this one
+
+01:08:32
+So MQTT-S is basically a version of MQTT which was adapted to the peculiarity of sensor nodes for which we may have constraints in the hardware. And so we may have difficulties in running the TCP stack.
+
+01:08:55
+Okay, so what is the main architecture as we have seen is this one, okay. We have MQTT forwarder or gateways, let's say, that translate between MQTT-S and the native MQTT messages.
+
+01:09:16
+And the main differences are this one. So the connection process is different. The topic names are different.
+
+01:09:26
+There is a fourth level of QoS, which is basically known as QoS-1. And there are some extended support for sleeping clients. Which makes sense, let's say, in a sensor network scenario.
+
+01:09:46
+Let's see quickly at least the four main changes. Okay. So.
+
+01:09:57
+here so the connection in mqtt legacy mqtt we have this connect message with all these fields okay in mqtts the connection process is split into three phases one of which the first one is mandatory okay the other two are optionals
+
+01:10:21
+So the mandatory connect contains only basically the keep alive information and the client ID plus some flags like the persistent section flag, etc. All the, let's say,
+
+01:10:43
+last-wheel topic and message information are mandatory and can be requested by the client after the first step. So why there is this split?
+
+01:10:56
+Simply for making the connection phase shorter both in time and in length of the messages.
+
+01:11:05
+So always remember that in IoT short messages are preferred over long messages. In MQTT Connect, in principle, we have an MQTT topic and an MQTT message, which may be long.
+
+01:11:26
+By splitting the Connect phase into three different parts, we can make the first part much shorter, and in case the last tweet, message, or topic is not specified, we save
+
+01:11:43
+Time and space based. Okay, ultimately we say Now topics
+
+01:11:56
+As I said in MQTT, there's no standard or rule of thumb for topics. There are some good practices. For example, keep your topic name short. Don't do more than five levels of hierarchy. But these are just rule of thumbs. There's no official rule on how to structure a topic.
+
+01:12:24
+Now, the problem is that topics must be specified in published messages. So whenever a node has to transmit something, it needs to specify the full topic over which it wants to publish this information. And this may be many bytes long.
+
+01:12:44
+So how do we compress this information? MQTT-SN, instead of using topic names, so strings,
+
+01:12:53
+In MQTTS we use short topics ID, two bytes per topic. So we compress any possible topic to 16 bits. And basically the idea is before using this 16 bits code, registering the topic over the broker and obtain a topic ID.
+
+01:13:17
+So the main logic is instead of every time I publish something, I use the full name topic, I register the topic once, I obtain a 16 bits ID, and then I use this 16 bits ID in my publications so that we compress to two bytes any possible topic length. clearly in order to do this first we need a register operation so the client sends a register message to a gateway containing the topic name the gateway replies with this two bytes topic and so that means that the gateway may support a maximum of 60 000 and something topic that you can encode with 16 bits
+
+01:14:08
+and from the registration on every publication we use this short topic id okay sometimes a gateway may send a register message to a client for informing it of a topic ID, for example in case of client reconnections or in case of client subscriptions to topic containing an hash or a plus, so basically multiple topics to be used at the same time.
+
+01:14:51
+Anyway, these are just details. Another difference is QoS level minus one, which is basically a very, very simple operation mechanism, which requires even no connection setup, no topic registration and no topic subscription.
+
+01:15:11
+So in order to simplify the life of our client even more, MQTS allows this QoS level where our client wakes up, sends a message, publishes a message even without connection setup, topic registration and topic subscription. okay so clear these things should be known a priori on the client so the clients must know a priori uh the gateway to transfer the information to the topic id to use etc etc okay so this is uh so called publish and forget mechanism
+
+01:15:57
+The last thing is the support for sleeping clients. So, basically. Uh, the, this decoupling between publishing and subscribing is present even more in where.
+
+01:16:13
+A gateway basically is aware of the status active or sleeping of the clients and will buffer messages destined to sleeping nodes for later delivery. So similar to what happened in Wi-Fi power save. If you are following also wireless internet.
+
+01:16:34
+So what happens? There's a state machine here. So the client is active.
+
+01:16:42
+can go to sleep mode with a disconnect message to the gateway indicating what is the sleep duration.
+
+01:16:53
+So the client can inform its own gateway that it's going to sleep and will sleep for 30 seconds, one minute, whatever. During this time, the gateway will buffer internally any message which is in principle needed to be destined to the client. Then, when the client reconnects, the gateway will proceed in downloading the information.
+
+01:17:23
+Here there's a mechanism of the sleep procedure. So, in the disconnect message, the sleep duration is
+
+01:17:40
+is explicited from here the client is asleep then the client wakes up sends a ping message so uses ping for informing the gateway that it's up and the gateway proceeds in transmitting published messages okay so instead of disconnecting completely and performing a new connection the sleeping transition can be more efficient with this mechanism basically okay so this was just a few details about mqgtsn i'll stop here okay that was MQTT with MQTT we close the part on application layer you will have your lab and your exercises on this part and then i believe from next week we will start looking at the bottom layers of the stack so we will look first at wired networks and then at wireless networks
+

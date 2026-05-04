@@ -1,0 +1,16 @@
+CQ6 broad filters
+=================
+
+HiveMQ DNS identification:
+dns && dns.qry.name == "broker.hivemq.com"
+
+Retained PUBLISH candidates:
+mqtt && !_ws.malformed && mqtt.msgtype == 3 && mqtt.retain == 1
+
+Final verification in script:
+- destination is one of the HiveMQ IPs resolved from DNS;
+- destination TCP port is 1883;
+- MQTT PUBLISH has retain flag set;
+- payload is empty/missing, which is the MQTT retained-message deletion pattern.
+- a previous retained value visible earlier in the capture is not required for
+  counting the erase attempt.

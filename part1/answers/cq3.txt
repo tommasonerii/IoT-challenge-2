@@ -1,0 +1,27 @@
+CQ3a answer: 10
+CQ3b answer: 5
+
+Observe registration:
+- frame=4343, token=89b9, client=127.0.0.1:48049, server=127.0.0.1:5683
+
+Initial Observe response, not counted as a separate notification:
+- frame=4344, MID=10588, token=89b9, value=19.97
+
+Counted notifications for CQ3a:
+- frame=4620, observe=1, MID=35, token=89b9, value=22.32, ACK=4624, ICMP=none
+- frame=5098, observe=2, MID=38, token=89b9, value=18.85, ACK=5099, ICMP=none
+- frame=5623, observe=3, MID=43, token=89b9, value=25.98, ACK=5629, ICMP=none
+- frame=8509, observe=4, MID=45, token=89b9, value=15.59, ACK=8510, ICMP=none
+- frame=9414, observe=5, MID=49, token=89b9, value=25.35, ACK=9415, ICMP=none
+- frame=9866, observe=6, MID=54, token=89b9, value=26.21, ACK=none, ICMP Port Unreachable=9867
+- frame=10573, observe=7, MID=62, token=89b9, value=27.53, ACK=none, ICMP Port Unreachable=10574
+- frame=11220, observe=8, MID=74, token=89b9, value=26.98, ACK=none, ICMP Port Unreachable=11221
+- frame=11917, observe=9, MID=87, token=89b9, value=25.32, ACK=none, ICMP Port Unreachable=11918
+- frame=12782, observe=10, MID=90, token=89b9, value=19.57, ACK=none, ICMP Port Unreachable=12783
+
+Useless notifications for CQ3b:
+- frame=9866, observe=6, MID=54, token=89b9, value=26.21, ICMP Port Unreachable=9867
+- frame=10573, observe=7, MID=62, token=89b9, value=27.53, ICMP Port Unreachable=10574
+- frame=11220, observe=8, MID=74, token=89b9, value=26.98, ICMP Port Unreachable=11221
+- frame=11917, observe=9, MID=87, token=89b9, value=25.32, ICMP Port Unreachable=11918
+- frame=12782, observe=10, MID=90, token=89b9, value=19.57, ICMP Port Unreachable=12783

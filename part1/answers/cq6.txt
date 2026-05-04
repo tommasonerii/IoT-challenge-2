@@ -1,0 +1,24 @@
+CQ6a answer: 5
+CQ6b answer: 2
+
+HiveMQ IPs from DNS:
+- 18.192.151.104
+- 35.158.34.213
+- 35.158.43.69
+
+Clients that sent at least one retained empty PUBLISH to HiveMQ:
+- atqeblw: length=7, first_erase_frame=1881, topic=hospital/building3
+- giuxfijwus: length=10, first_erase_frame=2865, topic=metaverse/department2
+- pcbtjyj: length=7, first_erase_frame=1838, topic=metaverse/room2/room2
+- pohujuv: length=7, first_erase_frame=769, topic=factory/facility3/area3/light
+- rolsmcwhshlbc: length=13, first_erase_frame=3109, topic=university/facility3
+
+Client identifiers strictly longer than 7 bytes:
+- giuxfijwus: length=10
+- rolsmcwhshlbc: length=13
+
+Additional check:
+- 34 retained empty PUBLISH messages also have a previous retained value visible
+  earlier in the capture for the same HiveMQ topic.
+- The client count does not require a previous retained value to be visible in
+  the capture; the retained empty PUBLISH is itself the erase attempt.

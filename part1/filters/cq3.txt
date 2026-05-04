@@ -1,0 +1,37 @@
+Observe registration:
+coap && !_ws.malformed && coap.code == 1 && coap.opt.observe == 0 && coap.opt.uri_path_recon == "/dining_room/temperature"
+
+Observe notifications containing JSON values:
+coap && !_ws.malformed && coap.opt.observe && json.value.string && udp.srcport == 5683
+
+Script verification also checks:
+- direction 127.0.0.1:5683 -> 127.0.0.1:48049
+- same token as the Observe registration, token 89b9
+- resource path == /dining_room/temperature
+- MID different from the Observe registration MID 10588
+- JSON value present
+- no coap.response_first_in
+- no coap.retransmitted
+- no comma-separated loopback duplicate IP fields
+
+CQ3b useless notification check:
+
+coap && !_ws.malformed && coap.type == 2 && coap.code == 0
+
+Script verification checks whether each counted CON notification has a later
+empty ACK from 127.0.0.1:48049 to 127.0.0.1:5683 with the same MID. Counted
+notifications without such ACK are treated as sent but not successfully
+processed. Retransmissions remain excluded because CQ3b only refers to CQ3a.
+
+ICMP Port Unreachable check for the same counted notifications:
+
+icmp && icmp.type == 3 && icmp.code == 3
+
+The useless CQ3b notifications are the counted notifications whose original
+frame is embedded in a later ICMP Port Unreachable message:
+
+- 9866 -> 9867
+- 10573 -> 10574
+- 11220 -> 11221
+- 11917 -> 11918
+- 12782 -> 12783

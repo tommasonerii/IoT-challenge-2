@@ -1,0 +1,228 @@
+IoT Challenge #2
+Packet Sniffing
+
+Home Challenge #2
+Part -1• Download the two PCAP files here or from WeBeep
+• Analyse the traffic with Wireshark or writing simple
+scripts (Python, C++)
+• Answer the 8 questions (CQ1-CQ8)
+(IGNORE MALFORMED PACKETS)
+Part -2• Solve the exercise in pdf (two questions EQ1, EQ2)
+FILL THE MS FORM for both parts: form
+
+2
+
+PART 1
+Questions on the PCAP file
+CQ1-4 refer to file A.pcapng
+CQ 5-7 refer to file B.pcapng
+CQ8 refers to both files
+
+Challenge Questions (1-2)
+
+4
+
+!! For CQ1-4, refer to the file A.pcapng
+CQ1a) Find all NON Confirmable DELETE requests directed to the coap.me
+server that received a successful response.
+Take note of the MID of such requests
+
+CQ1b) How many of the requests found in point CQ1a) actually obtained the
+desired outcome?
+CQ2) How many CoAP resources in the local server received the same
+number of unique unsuccessful Confirmable POST and PUT requests?
+Assuming a resource receives X different CON unsuccessful POST requests and Y different
+
+CON unsuccessful PUT requests, how many resources have X=Y, with X>0?
+!! Consider unsuccessful only if there is a response stating it is not successful !!
+
+Challenge Questions (3-4)
+
+5
+
+!! For CQ1-4, refer to the file A.pcapng
+CQ3a) How many separate observe notifications have been sent containing
+values for the resource “/dining_room/temperature”, ignoring
+retransmissions?
+CQ3b) How many of the notifications found in point CQ3a) are useless (e.g.,
+a waste of traffic)?
+CQ4) How many MQTT-SN messages are received by the clients from the
+local broker listening on port 1885?
+!! Pay attention on the Wireshark port to analyze MQTT-SN packets
+(Edit -> Preferences-> Protocols->MQTT-SN)
+---------------------------------------------------------------------
+
+!! From NOW ON (CQ5-7), refer to the file B.pcapng
+
+Challenge Questions (5-7)
+
+6
+
+!! For CQ5-7, refer to the file B.pcapng
+CQ5) How many MQTT subscribers receive a last will message derived from
+a subscription that includes atleast one wildcard?
+CQ6a) How many different MQTT clients sent atleast one message to erase
+a previously retained value in a topic in the public HiveMQ broker?
+CQ6b) How many of the clients found in CQ6a) connected to the HiveMQ
+broker with a client identifier strictly longer than 7 bytes (>7)?
+
+CQ7) How many MQTT subscribe requests directed to the local broker
+specify a topic with atleast two wildcards?
+
+Challenge Questions (8)
+
+7
+
+CQ8) Compare the local broker usage in the two capture files A.pcapng and
+B.pcapng. The goal is to have a plot on the number of layers of the topics
+used in the publish messages directed to the local broker in the two captures.
+Produce a histogram plot with number of messages for each number of layers
+• Take note of the total number of publish
+messages considered for this analysis in the
+two captures (all number of layers) -> Report
+the two values as CQ8a) CQ8b) in the form
+
+Produce a figure with this behaviour →
+• Include commented scripts in the
+delivery (if any)
+• Include the obtained figure in the report
+
+PART 2
+Exercise
+
+Part 2 - Exercise
+A smart building system includes:
+• A battery-powered temperature sensor that transmits a measurement
+every 2 minutes
+• A battery-powered actuator (fan controller) that receives temperature
+data and decides whether to turn ON/OFF
+• A gateway (mains-powered) that only supports MQTT
+The sensor and actuator can communicate either:
+• Directly using CoAP
+• Through the gateway using MQTT
+Communication parameters
+Payload size: 12 bytes
+Topic/resource length: 8 bytes
+
+9
+
+10
+
+Part 2 - Exercise
+Consider the following message sizes (in bytes), which already
+include header and payload size:
+COAP
+CON PUT Request
+PUT ACK
+
+70 B
+15 B
+
+MQTT
+Subscribe
+Sub Ack
+Publish
+Pub Ack
+Connect/Disconnect
+Connect Ack
+
+65 B
+55 B
+75 B
+50 B
+60 B
+50 B
+
+Part 2 - Exercise
+Assume that:
+1. Transmit and Receive cost per bit are
+ETX = 50nJ/bit, ERX = 58nJ/bit (nanojoule per bit)
+2. CoAP communication uses Confirmable (CON) messages
+3. MQTT communication uses QoS 1 (for both actuator and sensor sides)
+4. Ideal communication (no losses)
+5. When retransmission is required, RTO = 30s and MAX_TRANSMISSIONS = 3
+6. Devices start disconnected
+7. MQTT connections are closed gracefully during sleep periods (with
+non-acknowledged DISCONNECT)
+8. Only the energy consumed by the sensor and actuator must be
+considered (ignore gateway consumptions)
+
+11
+
+Part 2 - Exercise
+
+12
+
+Exercise Question 1 (EQ1):
+Compute the total communication energy consumed by the battery-powered sensor
+and actuator over 1 hour in:
+(a) CoAP (direct communication)
+(b) MQTT (via the gateway)
+Provide numerical results in µJ (microjoule).
+Exercise Question 2 (EQ2):
+Assume now that the actuator wakes up only once every 30 minutes.
+Which protocol would you choose for long-term operation?
+Justify your answer (max 300 characters), explicitly stating any protocol parameter
+required (e.g., clean session, retain, observe, block-transfer modes etc…) and
+performance metric you optimize.
+For EQ1a and EQ1b, motivate your answers in the PDF, and report the results in the form.
+For EQ2, report your full response in both the report and the form.
+
+Challenge deliverable
+
+13
+
+Deliver a ZIP file containing:
+• A PDF named Challenge.pdf containing motivated responses with all
+filters used and comments of any additional code (if used). Specify your
+names + person codes in the pdf!
+• A PDF named Exercise.pdf containing the solution of the Part 2
+exercise. Specify your names + person codes in the pdf!
+• FILL this form with the requested values (both parts)
+
+Organize clean reports! Very bad reports will be penalized
+Upload the zip file on the folder #2 on WeBeep “Consegne” folder
+The ZIP should be named as follows:
+2-teams:
+<leader_personcode>_<other_personcode>.zip
+Single:
+<person_code>.zip
+
+PLEASE NOTE (Part 1)
+
+14
+
+1. Files without name and personcode or in a weird format won’t be
+corrected (=0 points)
+2. Always make clear and highlight your answer.
+The answer should be clear and unique!
+Example, answers like this:
+“If ……… then the answer is 4, but if instead …………. then answer is 5”
+Will get 0 points. If you have doubts on questions ask before submitting
+3. Try to produce small but effective answers, write only useful things and if
+required upload images taken e.g. from wireshark. Final answers should
+be written as text. (not like, “see image for the answer”)
+
+For 2 people teams:
+
+15
+
+• Choose your team leader and name the file as:
+<leader_personcode>_<other_personcode>.zip
+• Only the teamleader should upload the challenge in WeBeep
+
+Do note upload the same challenge more times!!!
+• Can I take the challenges with the other class students (different Prof.)?
+YES, but only the team leader should upload the challenge in WeBeep
+
+16
+
+Delivery Deadline
+• FIRM Deadline:
+April 23, 2026 h 23.59
+
+• Max 2 people
+
+Good Luck!
+
+

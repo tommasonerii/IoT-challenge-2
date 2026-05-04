@@ -1,0 +1,9 @@
+Decode UDP port 1885 as MQTT-SN first:
+tshark -d udp.port==1885,mqttsn
+
+Messages received by clients from the local broker:
+mqttsn && !icmp && !_ws.malformed && udp.srcport == 1885
+
+Direction check:
+- broker -> client: udp.srcport == 1885
+- client -> broker: udp.dstport == 1885

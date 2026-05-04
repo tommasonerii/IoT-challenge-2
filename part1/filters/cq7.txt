@@ -1,0 +1,9 @@
+CQ7 broad filter
+================
+
+mqtt && !_ws.malformed && mqtt.msgtype == 8 && tcp.dstport == 1883 && (mqtt.topic contains "+" || mqtt.topic contains "#")
+
+Final verification in script:
+- destination is the local broker, i.e. loopback address ::1 or 127.0.0.1 on TCP port 1883;
+- the SUBSCRIBE topic filter has at least two wildcard characters in total;
+- if a SUBSCRIBE packet has multiple topic filters, the request frame is counted once.

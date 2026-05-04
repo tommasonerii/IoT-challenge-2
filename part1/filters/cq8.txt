@@ -1,0 +1,9 @@
+CQ8 broad filter
+================
+
+mqtt && !_ws.malformed && mqtt.msgtype == 3 && tcp.dstport == 1883
+
+Final verification in script:
+- destination is the local broker, i.e. loopback address 127.0.0.1 or ::1 on TCP port 1883;
+- every MQTT PUBLISH message is counted, including multiple PUBLISH messages decoded in the same TCP frame;
+- topic layers are counted as the number of non-empty topic levels separated by "/".

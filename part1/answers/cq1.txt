@@ -1,0 +1,15 @@
+CQ1 answers
+===========
+
+CQ1a
+----
+Answer MIDs: 30800
+
+- MID=30800, request_frame=11075, response_code=66
+
+CQ1b
+----
+Answer: 0
+
+Matched requests:
+- request_frame=11075, request_mid=30800, token=880f30d8b543d6f7, uri=/validate, response_frame=11078, response_code=66, response_mid=26010, follow_up_get_frame=11363, follow_up_response_frame=11364, follow_up_response_code=69

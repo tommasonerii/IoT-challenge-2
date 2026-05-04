@@ -1,0 +1,39 @@
+CQ1 candidate filter:
+
+coap && !_ws.malformed && coap.type == 1 && coap.code == 4 && ip.dst == 134.102.218.18 && udp.dstport == 5683
+
+Meaning:
+
+- coap.type == 1: NON-confirmable CoAP message
+- coap.code == 4: DELETE request
+- ip.dst == 134.102.218.18: coap.me server observed in A.pcapng
+- udp.dstport == 5683: standard CoAP port
+- !_ws.malformed: ignore malformed packets, as required by the challenge
+
+CQ1a proper DELETE success response:
+
+coap && coap.code == 66
+
+Manual/script verification after filtering:
+
+- same coap.token
+- response frame greater than request frame
+- reversed client/server IP addresses and UDP ports
+- first subsequent matching response
+- first match is selected even if it is not successful
+- for CQ1a, after matching, check whether the DELETE response is 2.02 Deleted
+- for CQ1b, check the later GET to the same resource
+
+CQ1b desired DELETE outcome:
+
+coap.code == 132
+
+Meaning:
+
+- 132 is CoAP 4.04 Not Found
+- the later GET to /validate returns 2.05 Content in this trace, so the
+  CQ1a DELETE request did not obtain the desired final outcome
+
+Follow-up GET check used for the matching CQ1a resource:
+
+coap && !_ws.malformed && coap.code == 1 && ip.dst == 134.102.218.18 && udp.dstport == 5683 && coap.opt.uri_path_recon == "/validate"

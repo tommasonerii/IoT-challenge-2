@@ -1,0 +1,12 @@
+CQ7 answer: 9
+
+MQTT SUBSCRIBE requests directed to the local broker with at least two wildcards:
+- frame=226, clientid=sjinzrhqg, topic_filter=university/+/+/deposit
+- frame=363, clientid=yfyyxj, topic_filter=hospital/+/+/light
+- frame=460, clientid=ggmqfceaplfl, topic_filter=metaverse/+/room1/#
+- frame=473, clientid=zmjnxudohrkaegmh, topic_filter=house/department3/+/+
+- frame=700, clientid=fixstgpixtt, topic_filter=metaverse/facility0/+/+
+- frame=1177, clientid=fixstgpixtt, topic_filter=hospital/fxlugs/+/#
+- frame=1915, clientid=fixstgpixtt, topic_filter=metaverse/+/+/hydraulic_valve
+- frame=2360, clientid=yfyyxj, topic_filter=factory/+/#
+- frame=2994, clientid=zmjnxudohrkaegmh, topic_filter=house/+/room1/#

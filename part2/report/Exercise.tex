@@ -1,0 +1,216 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black,
+  pdftitle={IoT Challenge 2 -- Part 2 (Exercise)},
+  pdfauthor={Tommaso Neri}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\renewcommand{\arraystretch}{1.18}
+\linespread{1.04}
+
+\newcommand{\coursename}{Internet of Things Lab}
+\newcommand{\challengename}{IoT Challenge \#2 -- Part 2 (Exercise)}
+\newcommand{\authorname}{Tommaso Neri}
+\newcommand{\personcode}{10817232}
+\newcommand{\answer}[1]{\textbf{\textcolor{red}{#1}}}
+\newcommand{\tx}{\mathrm{TX}}
+\newcommand{\rx}{\mathrm{RX}}
+\newcommand{\uJ}{\mu\mathrm{J}}
+
+\title{\challengename}
+\author{
+  \authorname\\
+  Person Code: \personcode
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\section*{General Parameters \& Constants}
+The sensor transmits one measurement every 2 minutes. Therefore, in the
+1-hour observation window:
+\[
+  N = \frac{60\ \mathrm{min}}{2\ \mathrm{min/update}} = 30
+  \quad \text{updates/hour}.
+\]
+I assume the first transmission occurs at $t=2$ minutes, so the 1-hour window
+contains 30 generated measurements.
+
+All message sizes in the exercise are given in bytes, while the radio energy
+costs are given per bit. Hence, for a message of length $L$ bytes:
+\[
+  E_{\tx}(L) = 8L \cdot 50 = 400L\ \mathrm{nJ},
+  \qquad
+  E_{\rx}(L) = 8L \cdot 58 = 464L\ \mathrm{nJ}.
+\]
+
+The costs per byte are therefore:
+\begin{itemize}
+    \item $E_{\tx} = 50\ \mathrm{nJ/bit} = 400\ \mathrm{nJ/byte}$
+    \item $E_{\rx} = 58\ \mathrm{nJ/bit} = 464\ \mathrm{nJ/byte}$
+\end{itemize}
+
+Only the battery-powered sensor and actuator are considered; the gateway is
+mains-powered and its energy consumption is ignored. Since the communication is
+ideal, no retransmission term is needed.
+
+\section*{EQ1: Energy Consumption over 1 Hour}
+
+\subsection*{(a) Case 1: CoAP (Direct Communication)}
+CoAP is used directly between the sensor and the actuator. For each update, the
+sensor transmits one Confirmable PUT Request of 70 bytes and receives one PUT
+ACK of 15 bytes.
+
+The energy consumed by the sensor over the 30 updates is:
+\[
+\begin{aligned}
+E_{\mathrm{Sensor,CoAP}}
+  &= N \cdot \left(E_{\tx}(70) + E_{\rx}(15)\right) \\
+  &= 30 \cdot (70 \cdot 400\ \mathrm{nJ} + 15 \cdot 464\ \mathrm{nJ}) \\
+  &= 30 \cdot (28{,}000\ \mathrm{nJ} + 6{,}960\ \mathrm{nJ}) \\
+  &= 30 \cdot 34{,}960\ \mathrm{nJ} \\
+  &= 1{,}048{,}800\ \mathrm{nJ} \\
+  &= 1048.8\ \uJ.
+\end{aligned}
+\]
+
+The actuator (subscriber) receives the CON PUT Request and transmits a PUT ACK directly to the sensor.
+The energy consumed by the actuator is:
+\[
+\begin{aligned}
+E_{\mathrm{Actuator,CoAP}}
+  &= N \cdot \left(E_{\rx}(70) + E_{\tx}(15)\right) \\
+  &= 30 \cdot (70 \cdot 464\ \mathrm{nJ} + 15 \cdot 400\ \mathrm{nJ}) \\
+  &= 30 \cdot (32{,}480\ \mathrm{nJ} + 6{,}000\ \mathrm{nJ}) \\
+  &= 30 \cdot 38{,}480\ \mathrm{nJ} \\
+  &= 1{,}154{,}400\ \mathrm{nJ} \\
+  &= 1154.4\ \uJ.
+\end{aligned}
+\]
+
+Overall, the energy consumed using CoAP is the sum of the two values:
+\[
+  E_{\mathrm{CoAP}}
+  = E_{\mathrm{Sensor,CoAP}} + E_{\mathrm{Actuator,CoAP}}
+  = 2203.2\ \uJ.
+\]
+
+\textbf{Answer EQ1(a):} \answer{2203.2 $\mu\mathrm{J}$}
+
+\subsection*{(b) Case 2: MQTT (Via Gateway)}
+For EQ1, I treat the 1-hour observation window as one active MQTT session for
+both battery-powered devices. Devices start disconnected, so each MQTT client
+connects once at the beginning and then stays connected for the whole hour. No
+DISCONNECT message is counted in EQ1, and the actuator subscribes only once. The
+explicit sleep/wake behavior is evaluated separately in EQ2. Whether the MQTT
+session is persistent or clean does not change this EQ1 energy count.
+
+The sensor first performs CONNECT/CONNACK. Then, for each update, it sends a
+QoS 1 PUBLISH to the gateway and receives the PUBACK:
+\[
+\begin{aligned}
+E_{\mathrm{S,conn}}
+  &= E_{\tx}(60) + E_{\rx}(50) \\
+  &= 60 \cdot 400 + 50 \cdot 464 \\
+  &= 47{,}200\ \mathrm{nJ}.
+\end{aligned}
+\]
+
+\[
+\begin{aligned}
+E_{\mathrm{S,pub}}
+  &= E_{\tx}(75) + E_{\rx}(50) \\
+  &= 75 \cdot 400 + 50 \cdot 464 \\
+  &= 53{,}200\ \mathrm{nJ/update}.
+\end{aligned}
+\]
+
+\[
+\begin{aligned}
+E_{\mathrm{Sensor,MQTT}}
+  &= E_{\mathrm{S,conn}} + N \cdot E_{\mathrm{S,pub}} \\
+  &= 47{,}200 + 30 \cdot 53{,}200 \\
+  &= 1{,}643{,}200\ \mathrm{nJ}
+   = 1643.2\ \uJ.
+\end{aligned}
+\]
+
+The actuator first performs CONNECT/CONNACK and SUBSCRIBE/SUBACK. Then, for
+each update, it receives a QoS 1 PUBLISH from the gateway and transmits the
+PUBACK:
+\[
+\begin{aligned}
+E_{\mathrm{A,conn}}
+  &= E_{\tx}(60) + E_{\rx}(50) \\
+  &= 60 \cdot 400 + 50 \cdot 464 \\
+  &= 47{,}200\ \mathrm{nJ}.
+\end{aligned}
+\]
+
+\[
+\begin{aligned}
+E_{\mathrm{A,sub}}
+  &= E_{\tx}(65) + E_{\rx}(55) \\
+  &= 65 \cdot 400 + 55 \cdot 464 \\
+  &= 51{,}520\ \mathrm{nJ}.
+\end{aligned}
+\]
+
+\[
+\begin{aligned}
+E_{\mathrm{A,recv}}
+  &= E_{\rx}(75) + E_{\tx}(50) \\
+  &= 75 \cdot 464 + 50 \cdot 400 \\
+  &= 54{,}800\ \mathrm{nJ/update}.
+\end{aligned}
+\]
+
+\[
+\begin{aligned}
+E_{\mathrm{Actuator,MQTT}}
+  &= E_{\mathrm{A,conn}} + E_{\mathrm{A,sub}} + N \cdot E_{\mathrm{A,recv}} \\
+  &= 47{,}200 + 51{,}520 + 30 \cdot 54{,}800 \\
+  &= 1{,}742{,}720\ \mathrm{nJ}
+   = 1742.72\ \uJ.
+\end{aligned}
+\]
+
+Overall, the energy consumed using MQTT is:
+\[
+  E_{\mathrm{MQTT}}
+  = E_{\mathrm{Sensor,MQTT}} + E_{\mathrm{Actuator,MQTT}}
+  = 3385.92\ \uJ.
+\]
+
+\textbf{Answer EQ1(b):} \answer{3385.92 $\mu\mathrm{J}$}
+
+\section*{EQ2: Actuator wakes up only once every 30 minutes}
+
+\textbf{Which protocol would you choose for long-term operation?} \\
+\answer{MQTT}
+
+\textbf{Answer and justification for form/report (290 characters):} \\
+MQTT QoS 1, sensor PUBLISH RETAIN=1, actuator Clean Session=True. Optimize actuator energy and freshness: broker keeps only the latest value; at each wake-up actuator connects, subscribes, receives one retained PUBLISH and ACKs. Clean session avoids queued old QoS1 messages while sleeping.
+
+\end{document}

@@ -1,0 +1,16 @@
+CQ5 broad filters
+=================
+
+Last Will declarations:
+mqtt && !_ws.malformed && mqtt.msgtype == 1 && mqtt.conflag.willflag == 1
+
+MQTT subscriptions with wildcard topic filters:
+mqtt && !_ws.malformed && mqtt.msgtype == 8 && (mqtt.topic contains "+" || mqtt.topic contains "#")
+
+Candidate Last Will deliveries:
+mqtt && !_ws.malformed && mqtt.msgtype == 3 && tcp.srcport == 1883
+
+Final verification in script:
+- match CONNECT Will topic and Will payload to a broker -> subscriber PUBLISH;
+- use only PUBLISH packets received by a subscriber;
+- require that the subscriber stream has a previous wildcard SUBSCRIBE matching the Will topic.

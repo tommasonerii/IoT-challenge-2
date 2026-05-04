@@ -1,0 +1,13 @@
+CQ5 answer: 1
+
+One MQTT subscriber receives a Last Will message through a wildcard subscription.
+
+Matched delivery:
+- publish_frame=6564
+- subscriber clientid=zmjnxudohrkaegmh
+- subscription=university/#
+- Last Will topic=university/department12/room1/temperature
+- Last Will declaring stream=0
+
+Other Last Will declarations in the capture do not produce a received Last Will
+that is linked to a matching wildcard subscription.

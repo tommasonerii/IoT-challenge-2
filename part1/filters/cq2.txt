@@ -1,0 +1,28 @@
+CQ2 candidate request filter:
+
+coap && !_ws.malformed && coap.type == 0 && (coap.code == 2 || coap.code == 3) && ip.dst == 127.0.0.1 && udp.dstport == 5683
+
+Meaning:
+
+- coap.type == 0: Confirmable CoAP message
+- coap.code == 2: POST request
+- coap.code == 3: PUT request
+- ip.dst == 127.0.0.1: local CoAP server
+- udp.dstport == 5683: standard CoAP port
+- !_ws.malformed: ignore malformed packets, as required by the challenge
+
+Unsuccessful response filter used for verification:
+
+coap && !_ws.malformed && ip.src == 127.0.0.1 && udp.srcport == 5683 && coap.code >= 128
+
+Manual/script verification after filtering:
+
+- request is CON POST or CON PUT directed to the local server
+- response frame is after the request frame
+- response has the same coap.token as the request
+- client/server IP addresses and UDP ports are reversed
+- piggybacked response: same coap.token and same coap.mid
+- separate response: same non-empty coap.token, MID can be different
+- response has coap.code >= 128
+- count requests, not response codes
+- do not count the same logical CON request twice

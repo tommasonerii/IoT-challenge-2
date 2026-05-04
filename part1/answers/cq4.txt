@@ -1,0 +1,10 @@
+CQ4 answer: 0
+
+MQTT-SN decode-as used:
+- udp.port==1885,mqttsn
+
+Direction counts:
+- client -> broker messages, udp.dstport == 1885: 219
+- broker -> client messages, udp.srcport == 1885: 0
+
+Only broker -> client messages answer the question, because those are the messages received by clients from the local broker.

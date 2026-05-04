@@ -1,0 +1,36 @@
+CQ2
+---
+Answer: 1
+
+Resources with the same number of unsuccessful CON POST and PUT requests:
+
+- /dining_room: POST=1, PUT=1
+
+Matched unsuccessful requests:
+- resource=/main_door, method=PUT, request_frame=36, request_mid=1330, response_frame=37, response_code=128
+- resource=/dining_room/temperature, method=PUT, request_frame=50, request_mid=48174, response_frame=51, response_code=133
+- resource=/test, method=POST, request_frame=114, request_mid=64080, response_frame=115, response_code=133
+- resource=/dining_room/temperature, method=POST, request_frame=434, request_mid=21336, response_frame=435, response_code=133
+- resource=/dining_room/temperature, method=POST, request_frame=672, request_mid=53552, response_frame=673, response_code=133
+- resource=/basic, method=PUT, request_frame=1005, request_mid=50477, response_frame=1006, response_code=132
+- resource=/dining_room/temperature, method=POST, request_frame=1406, request_mid=11409, response_frame=1407, response_code=133
+- resource=/dining_room/door, method=PUT, request_frame=1916, request_mid=33760, response_frame=1917, response_code=128
+- resource=/living_room/door, method=PUT, request_frame=2492, request_mid=6326, response_frame=2493, response_code=128
+- resource=/hello_world, method=POST, request_frame=2815, request_mid=25749, response_frame=2816, response_code=133
+- resource=/test, method=POST, request_frame=3350, request_mid=6295, response_frame=3351, response_code=133
+- resource=/main_door, method=PUT, request_frame=3441, request_mid=30514, response_frame=3442, response_code=132
+- resource=/dining_room, method=POST, request_frame=3858, request_mid=40958, response_frame=3859, response_code=128
+- resource=/basic, method=POST, request_frame=4240, request_mid=42780, response_frame=4241, response_code=133
+- resource=/basic, method=POST, request_frame=4853, request_mid=11242, response_frame=4854, response_code=133
+- resource=/main_door, method=POST, request_frame=7808, request_mid=33536, response_frame=7809, response_code=133
+- resource=/dining_room, method=PUT, request_frame=8051, request_mid=10680, response_frame=8052, response_code=132
+- resource=/living_room/temperature, method=POST, request_frame=9685, request_mid=21082, response_frame=9686, response_code=133
+- resource=/living_room, method=POST, request_frame=9709, request_mid=40534, response_frame=9710, response_code=133
+- resource=/dining_room/temperature, method=POST, request_frame=10177, request_mid=10465, response_frame=10178, response_code=133
+- resource=/dining_room/temperature, method=POST, request_frame=10215, request_mid=10466, response_frame=10216, response_code=133
+- resource=/hello_world, method=POST, request_frame=10264, request_mid=26063, response_frame=10265, response_code=133
+- resource=/dining_room/door, method=POST, request_frame=10508, request_mid=9853, response_frame=10509, response_code=133
+- resource=/dining_room/door, method=POST, request_frame=10905, request_mid=10179, response_frame=10906, response_code=133
+- resource=/dining_room/temperature, method=PUT, request_frame=11454, request_mid=40207, response_frame=11455, response_code=133
+- resource=/hello_world, method=POST, request_frame=12643, request_mid=29078, response_frame=12644, response_code=133
+- resource=/hello_world, method=POST, request_frame=12659, request_mid=57914, response_frame=12660, response_code=133

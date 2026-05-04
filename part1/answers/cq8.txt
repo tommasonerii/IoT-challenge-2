@@ -1,0 +1,21 @@
+CQ8a answer: 439
+CQ8b answer: 534
+
+Topic layer histogram for PUBLISH messages directed to the local broker:
+
+A.pcapng:
+- layers=1: 0
+- layers=2: 154
+- layers=3: 131
+- layers=4: 154
+- total: 439
+
+B.pcapng:
+- layers=1: 21
+- layers=2: 172
+- layers=3: 162
+- layers=4: 179
+- total: 534
+
+Figure:
+- part1/figures/cq8_histogram.png
